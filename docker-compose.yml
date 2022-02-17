@@ -4,10 +4,28 @@ services:
   app:
     build:
       context: .
-    ports:
-      - "8000:8000"
+    # ports:
+    #   - "8000:8000"
     volumes:
        - ./app:/app
+    # network_mode: host
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
-      
+      sh -c "python manage.py runserver 0.0.0.0:8888"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASS=supersecretpassword
+    depends_on:
+      - db
+    ports:
+      - "8888:8888"
+    expose:
+      - "8888"
+
+  db:
+    image: postgres:10-alpine
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=supersecretpassword
